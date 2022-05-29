@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import Container from "@mui/material/Container";
@@ -21,7 +21,7 @@ function App() {
   const [posted, setPost] = useState(null);
   const [url, setURL] = useState("");
   const [open, setOpen] = useState(false);
-  const [severity, setSeverity] = useState("");
+  const textInput = useRef(null);
 
   const validateURL = (string) => {
     return string.match(HTTP_URL_VALIDATOR_REGEX);
@@ -31,7 +31,7 @@ function App() {
     setURL(e.target.value);
   };
 
-  async function handleClick() {
+  async function handleClick(e) {
     if (validateURL(url)) {
       await axios.post(`https://api.shrtco.de/v2//shorten?url=${url}`)
          .then((response) => {
@@ -41,12 +41,10 @@ function App() {
          .catch(function (error) {
            console.log(error);
          });
-         setSeverity("success");
-         //setOpen(true);
     } else {
       setPost("Not a valid URL");
-      setSeverity("error");
     }
+    textInput.current.value = "";
     setOpen(true)
   }
 
@@ -65,6 +63,7 @@ function App() {
           id="outlined-basic"
           label="Short your URL"
           variant="outlined"
+          inputRef={textInput}
           onChange={handleChange}
           InputProps={{ endAdornment: <SearchURL onClick={handleClick} /> }}
         />
@@ -83,7 +82,7 @@ function App() {
               </IconButton>
             }
             sx={{ mb: 2 }}
-            severity= {severity}
+            severity= {validateURL(url) ? "success" : "error"} 
           >
             {posted}
           </Alert>
