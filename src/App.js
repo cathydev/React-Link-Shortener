@@ -33,6 +33,7 @@ function App() {
 
   async function handleClick(e) {
     e.preventDefault();
+    setPost(null)
     if (validateURL(url)) {
       try {
         const response = await axios.post(`https://api.rebrandly.com/v1/links`, {
