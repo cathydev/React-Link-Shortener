@@ -32,15 +32,22 @@ function App() {
   };
 
   async function handleClick(e) {
+    e.preventDefault();
     if (validateURL(url)) {
-      await axios.post(`https://api.shrtco.de/v2//shorten?url=${url}`)
-         .then((response) => {
-           console.log(response.data);
-           setPost(response.data.result.short_link);
-         })
-         .catch(function (error) {
-           console.log(error);
-         });
+      try {
+        const response = await axios.post(`https://api.rebrandly.com/v1/links`, {
+          destination: url,
+          domain: { fullName: "rebrand.ly" }
+        }, {
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": process.env.REACT_APP_API_KEY,
+          }
+        });
+        setPost(response.data.shortUrl)
+      } catch (error) {
+        console.log(error)
+      }
     } else {
       setPost("Not a valid URL");
     }
@@ -77,12 +84,12 @@ function App() {
                 onClick={() => {
                   setOpen(false);
                 }}
-                >
+              >
                 <CloseIcon fontSize="inherit" />
               </IconButton>
             }
             sx={{ mb: 2 }}
-            severity= {validateURL(url) ? "success" : "error"} 
+            severity={validateURL(url) ? "success" : "error"}
           >
             {posted}
           </Alert>
