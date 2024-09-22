@@ -28,10 +28,12 @@ function App() {
   };
 
   const handleChange = (e) => {
+    setOpen(false)
+    setPost(null)
     setURL(e.target.value);
   };
 
-  async function handleClick(e) {
+  async function handleURL(e) {
     e.preventDefault();
     setPost(null)
     if (validateURL(url)) {
@@ -73,7 +75,12 @@ function App() {
           variant="outlined"
           inputRef={textInput}
           onChange={handleChange}
-          InputProps={{ endAdornment: <SearchURL onClick={handleClick} /> }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              handleURL(event);
+            }
+          }}
+          InputProps={{ endAdornment: <SearchURL onClick={handleURL} /> }}
         />
         <Collapse in={open}>
           <Alert
