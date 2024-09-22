@@ -32,19 +32,17 @@ function App() {
     setPost(null)
     setURL(e.target.value);
   };
-
+  
   async function handleURL(e) {
     e.preventDefault();
     setPost(null)
     if (validateURL(url)) {
       try {
-        const response = await axios.post(`https://api.rebrandly.com/v1/links`, {
-          destination: url,
-          domain: { fullName: "rebrand.ly" }
+        const response = await axios.post('http://localhost:3333/api/short', {
+          origUrl: url
         }, {
           headers: {
-            "Content-Type": "application/json",
-            "apikey": process.env.REACT_APP_API_KEY,
+            'Content-Type': 'application/json'
           }
         });
         setPost(response.data.shortUrl)
